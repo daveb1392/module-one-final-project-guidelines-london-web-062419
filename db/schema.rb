@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190705155323) do
+ActiveRecord::Schema.define(version: 20190708092032) do
 
   create_table "locations", force: :cascade do |t|
     t.string "name"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20190705155323) do
   create_table "stories", force: :cascade do |t|
     t.integer "user_id"
     t.integer "location_id"
-    t.string  "blog_name"
+    t.string  "title"
     t.string  "content"
   end
 
