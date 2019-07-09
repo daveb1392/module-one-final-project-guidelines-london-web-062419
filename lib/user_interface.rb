@@ -89,6 +89,7 @@ class UserInterface
     
     def main_menu
         system "clear"
+        15.times do puts "" end
         main_menu = prompt.select("Please select from the following", "Your Stories", "Location Stories", "Quit")
 
         case main_menu
