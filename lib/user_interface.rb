@@ -3,6 +3,8 @@ class UserInterface
 
     attr_reader :prompt, :current_user
 
+    @@creatures = []
+
     def initialize
         @current_user = nil
         @prompt = TTY::Prompt.new
@@ -58,11 +60,13 @@ class UserInterface
 
     def random_characters
         # characters = ["Wizard","Witch","Ogre","Dragon","Fairy","Goblin","Griffen","Elf","Gnome","Vampire","Werewolf","Shapeshifter","Mermaid","Lochness Monster", "Sasquatch (Big Foot)"]
-        all_characters = Creature.all_creatures
-        randomized = all_characters.sample(3)
-        puts randomized
+        all_characters = Creature.all
+        @@creatures = all_characters.sample(3)
+        puts @@creatures.map{|char| char.creature}
         
     end
+
+
 
     def random_location
         # location = ["Hogwarts","Black Forest","Aokigahara Forest(Look it up, if you don't know :( )", "Babylon", "Atlantis"]
@@ -81,9 +85,10 @@ class UserInterface
         story_title = prompt.ask("What the title of your story")
         story_content = prompt.ask("Write your magical story")
         #add and save to db
-        new_story = Story.create(:title=>"#{story_title}", :content=>"#{story_content}", :user_id=>"#{@current_user.id}", :location_id=>"#{single_location.id}") 
+        new_story = Story.create(:title=>"#{story_title}", :content=>"#{story_content}", :user_id=>"#{@current_user.id}", :location_id=>"#{single_location.id}")
+        @@creatures = []
         main_menu
-
+        
     end
 
     
@@ -111,11 +116,14 @@ class UserInterface
   
     def option_drop_down(user_all_stories_title)
         select_story = prompt.select("Pick a story", [user_all_stories_title])
+        # user_content = @current_user.all_user_content
+        story = Story.find_by(title: select_story)
+        select_content = story.content
+        puts "#{select_content}"
         story_option = prompt.select("Would you like to edit or delete this story", ["Edit", "Delete", "Go back"])
         story = Story.find_by(title: select_story)
        
-        user_content = @current_user.all_user_content
-        content = Story.find_by(content: user_content)
+        
 
         if story_option == "Edit"
             user_content = prompt.ask "Edit your story"
@@ -154,6 +162,13 @@ class UserInterface
         end
     end
 
+    # def story_content(user_all_stories_title)
+    #     all_stories = Story.all.map{|story| story.content}
+    #     all_stories.select{|| == @current_user}
+
+    #     content.select{|story| story. user_all_stories_title == }
+    # end
+
 
 
     def location_stories 
@@ -162,13 +177,18 @@ class UserInterface
         location_array = Story.all.map{|story| story.location.name}.uniq #returns individual locations name
         # all_titles = Story.story_title
         # all_titles.select{|stor| story.}
+
         chosen_location = prompt.select("Choose location", location_array)
         stories_of_location = Location.find_by(name: chosen_location).stories
         location_stories = stories_of_location.map { |story| story.title}
         puts location_stories
 
-        
-
+        # option = prompt.select("You can either:", "Go Back","Or Quit!")
+        # if option == "Go Back"
+        #     main_menu
+        # else option == "Or Quit!"
+        #     exit
+        # end 
     end
 
 
