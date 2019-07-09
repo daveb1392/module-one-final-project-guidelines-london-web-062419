@@ -10,6 +10,9 @@ class Story < ActiveRecord::Base
         all_stories.map{|story| story.title}
     end
 
+    def self.location_n
+        Story.all.map { |story| story.location.name }.uniq 
+    end
 
 
 end 
