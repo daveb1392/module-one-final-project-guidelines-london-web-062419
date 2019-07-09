@@ -175,8 +175,10 @@ class UserInterface
         # Location.all_location_names
         list_of_locations = Story.all.map { |story| story.location }.uniq.sort
         location_array = Story.all.map{|story| story.location.name}.uniq #returns individual locations name
-        # all_titles = Story.story_title
-        # all_titles.select{|stor| story.}
+        
+        # story = Story.find_by(title: select_story)
+        # select_content = story.content
+        # puts "#{select_content}"
 
         chosen_location = prompt.select("Choose location", location_array)
         stories_of_location = Location.find_by(name: chosen_location).stories
