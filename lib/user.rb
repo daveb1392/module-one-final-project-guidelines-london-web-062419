@@ -6,4 +6,10 @@ class User < ActiveRecord::Base
     # def new_user(username)
     #     @current_user = self.find_or_create_by(username: username)
     # end 
+
+   
+
+
+
+
 end 
