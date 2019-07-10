@@ -42,9 +42,8 @@ class UserInterface
             end 
             user = User.where(username: user_info[:username], password: user_info[:password]).last
             if user.nil?
-                puts "Wrong login details! Please try again!"
-                sleep 2 
-                username_login
+                sleep 1
+                error_login
             else 
                 puts "You're now logged in! "
                 @current_user = user
@@ -52,6 +51,41 @@ class UserInterface
             end
             # prompt.mask('Please enter your password', symbols: {mask: bat})
          end 
+
+            def error_login
+                error = prompt.select("Wrong login details! Please try again!", "Retry login", "Quit")
+                sleep 1 
+                
+            case error   
+                when "Retry login"
+                        username_login
+                when  "Quit"
+                        exit
+                end
+
+            end
+
+
+            
+        #     case login
+                
+        #     when user.nil?
+             
+        #     prompt.select("Wrong login details! Please try again!", "Retry login", "Quit")
+        #         sleep 2 
+                
+        #     when "Retry login"
+        #         username_login
+        #     when "Quit"
+        #         exit
+                
+        #     when user.valid?
+        #     puts "You're now logged in! "
+        #         @current_user = user
+        #         second_greeting
+        #     end
+        #     # prompt.mask('Please enter your password', symbols: {mask: bat})
+        #  end 
 
          def create_user
             user_creds = prompt.collect do
