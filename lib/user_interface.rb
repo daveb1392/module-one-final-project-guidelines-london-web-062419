@@ -88,9 +88,10 @@ class UserInterface
         #  end 
 
          def create_user
+            bat = prompt.decorate(prompt.symbols["U+1F987"])
             user_creds = prompt.collect do
                 key(:username).ask('Please enter a username:', required: true)
-                key(:password).ask('Please enter a password:', required: true)
+                key(:password).mask('Please enter a password:', symbols: {mask: bat})
          end 
             @current_user = User.create(**user_creds)
             @current_user.save
