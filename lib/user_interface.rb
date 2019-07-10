@@ -8,14 +8,16 @@ class UserInterface
     def initialize
         @current_user = nil
         @prompt = TTY::Prompt.new
+        @font = TTY::Font.new
     end 
 
-    # def new_user
-    #     @current_user = User.find_or_create_by(username: username)
-
-    # end
+  
+    # def title
+    #     putsfont.write("Story2Go")
+    # end 
 
     def greet
+        # puts @font.write("Story2Go")
         puts "Welcome to Story2Go, if you love creating stories, you’re in the right place!"
         existing_user = prompt.select("Do you have an account with us?", %w(Yes No))
             if  existing_user == "Yes"
@@ -34,18 +36,18 @@ class UserInterface
             #find the user
             #no duplicate usernames
             #validate their password
-            bat = prompt.decorate(prompt.symbols['U+1F987'])
+            heart = prompt.decorate(prompt.symbols[:heart])
             user_info = prompt.collect do 
                 key(:username).ask('Please enter your username:', require: true)
                 # key(:password).ask('Please enter your password:', require: true)
-                key(:password).mask('Please enter your password', symbols: {mask: bat})
+                key(:password).mask('Please enter your password', symbols: {mask: heart})
             end 
             user = User.where(username: user_info[:username], password: user_info[:password]).last
             if user.nil?
                 sleep 1
                 error_login
             else 
-                puts "You're now logged in! "
+                puts "You're now logged in!  😎"
                 @current_user = user
                 second_greeting
             end
@@ -53,7 +55,7 @@ class UserInterface
          end 
 
             def error_login
-                error = prompt.select("Wrong login details! Please try again!", "Retry login", "Quit")
+                error = prompt.select("Wrong login details! 😔  Please try again!", "Retry login", "Quit")
                 sleep 1 
                 
             case error   
@@ -88,10 +90,10 @@ class UserInterface
         #  end 
 
          def create_user
-            bat = prompt.decorate(prompt.symbols["U+1F987"])
+            heart = prompt.decorate(prompt.symbols[:heart])
             user_creds = prompt.collect do
                 key(:username).ask('Please enter a username:', required: true)
-                key(:password).mask('Please enter a password:', symbols: {mask: bat})
+                key(:password).mask('Please enter a password:', symbols: {mask: heart})
          end 
             @current_user = User.create(**user_creds)
             @current_user.save
@@ -230,16 +232,13 @@ class UserInterface
     def user_stories
         user_all_stories = Story.where(user_id: @current_user).select { |story| story.title != "" }
         user_all_stories_title = user_all_stories.map{|story| story.title}
-        # @current_user.stories.each do |story| 
-        #     puts story.title
-        #  end
 
         if user_all_stories_title.count > 0 
         option_drop_down(user_all_stories_title) 
        
         else
             puts "You have 0 stories :("
-            sleep 1
+            sleep 3
             main_menu
         end
     end
@@ -269,38 +268,5 @@ class UserInterface
             exit
         end 
     end
-
-
-            
-
-
-        
-    # def story_index
-    #     puts "--- story by you, #{@current_user.name} ---"
-    #     # How to print out each story by user with an ID and a Title.
-    #     @current_user.story.each do |story|
-    #     puts "#{story.id}. #{story.title}"
-    #     end
-    # end
-
-    # def story_show
-    #     puts "Loading story #{last_input}..."
-    #     # calling the users story
-    #     if story = current_user.story.find_by(:id => )
-    #     puts "--- #{story.id} --- #{story.title}"
-    #     puts
-    #     puts story.content
-    #     else
-    #     # rescue ActiveRecord::RecordNotFound
-    #     puts "Can't find a story with ID #{last_input} for you..."
-    # end
-        
-    # end
-
-
-    # def user_input
-    #     self.last_input = @prompt
-    # end
-
 
 end 
