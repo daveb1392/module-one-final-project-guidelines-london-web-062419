@@ -10,20 +10,67 @@ class UserInterface
         @prompt = TTY::Prompt.new
     end 
 
-    def new_user(username)
-        @current_user = User.find_or_create_by(username: username)
+    # def new_user
+    #     @current_user = User.find_or_create_by(username: username)
 
-    end
+    # end
 
     def greet
         puts "Welcome to Story2Go, if you love creating stories, you’re in the right place!"
-        username = prompt.ask('Please create your username?', default: 'Anonymous')
-        puts "Hello, #{username}. Instructions:
+        existing_user = prompt.select("Do you have an account with us?", %w(Yes No))
+            if  existing_user == "Yes"
+                username_login
+            else existing_user == "No"
+                # username = prompt.ask('Please create your username?', default: 'Anonymous')
+                @current_user = create_user
+                # password = prompt.mask('Please enter a password', symbols: {mask:bat})
+                puts "Your account has been created"
+                sleep 1
+                second_greeting
+            end 
+        end 
+
+         def username_login
+            #find the user
+            #no duplicate usernames
+            #validate their password
+            bat = prompt.decorate(prompt.symbols['U+1F987'])
+            user_info = prompt.collect do 
+                key(:username).ask('Please enter your username:', require: true)
+                # key(:password).ask('Please enter your password:', require: true)
+                key(:password).mask('Please enter your password', symbols: {mask: bat})
+            end 
+            user = User.where(username: user_info[:username], password: user_info[:password]).last
+            if user.nil?
+                puts "Wrong login details! Please try again!"
+                sleep 2 
+                username_login
+            else 
+                puts "You're now logged in! "
+                @current_user = user
+                second_greeting
+            end
+            # prompt.mask('Please enter your password', symbols: {mask: bat})
+         end 
+
+         def create_user
+            user_creds = prompt.collect do
+                key(:username).ask('Please enter a username:', required: true)
+                key(:password).ask('Please enter a password:', required: true)
+         end 
+            @current_user = User.create(**user_creds)
+            @current_user.save
+            second_greeting
+        end 
+
+    def second_greeting
+
+        puts "Hello, #{@current_user.username}."
+        "Instructions:
         You will be given three random characters,
         You will also be given a random location
         With this information you may create any story you’d like!"
-        new_user(username)
-        puts "-----------------------------------------------------"
+        puts "*------------------------------------------------------------------*"
         mini_menu
     end 
 
@@ -156,41 +203,36 @@ class UserInterface
         option_drop_down(user_all_stories_title) 
        
         else
-            puts "You have 0 stories"
+            puts "You have 0 stories :("
             sleep 1
             main_menu
         end
     end
 
-    # def story_content(user_all_stories_title)
-    #     all_stories = Story.all.map{|story| story.content}
-    #     all_stories.select{|| == @current_user}
-
-    #     content.select{|story| story. user_all_stories_title == }
-    # end
-
-
-
     def location_stories 
         # Location.all_location_names
-        list_of_locations = Story.all.map { |story| story.location }.uniq.sort
-        location_array = Story.all.map{|story| story.location.name}.uniq #returns individual locations name
-        
-        # story = Story.find_by(title: select_story)
-        # select_content = story.content
-        # puts "#{select_content}"
+      
+        list_of_locations = Story.all.map{|story| story.location.name}.uniq #returns individual locations name
 
-        chosen_location = prompt.select("Choose location", location_array)
+        chosen_location = prompt.select("Choose location", list_of_locations)
+
         stories_of_location = Location.find_by(name: chosen_location).stories
         location_stories = stories_of_location.map { |story| story.title}
-        puts location_stories
+        # puts location_stories
 
-        # option = prompt.select("You can either:", "Go Back","Or Quit!")
-        # if option == "Go Back"
-        #     main_menu
-        # else option == "Or Quit!"
-        #     exit
-        # end 
+        #now to get the content for the titles
+         chosen_title = prompt.select("View a Story", location_stories)
+
+         story = Story.find_by(title: location_stories)
+         select_content = story.content
+         puts "#{select_content}"
+
+        option = prompt.select("You can either:", "Go Back","Or Quit!")
+        if option == "Go Back"
+            main_menu
+        else option == "Or Quit!"
+            exit
+        end 
     end
 
 
