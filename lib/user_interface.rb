@@ -11,13 +11,7 @@ class UserInterface
         @font = TTY::Font.new
     end 
 
-  
-    # def title
-    #     putsfont.write("Story2Go")
-    # end 
-
     def greet
-        # puts @font.write("Story2Go")
         puts "Welcome to Story2Go, if you love creating stories, you’re in the right place!"
         existing_user = prompt.select("Do you have an account with us?", %w(Yes No))
             if  existing_user == "Yes"
@@ -28,7 +22,7 @@ class UserInterface
                 # password = prompt.mask('Please enter a password', symbols: {mask:bat})
                 puts "Your account has been created"
                 sleep 1
-                second_greeting
+                instructions
             end 
         end 
 
@@ -49,7 +43,7 @@ class UserInterface
             else 
                 puts "You're now logged in!  😎"
                 @current_user = user
-                second_greeting
+                instructions
             end
             # prompt.mask('Please enter your password', symbols: {mask: bat})
          end 
@@ -68,27 +62,6 @@ class UserInterface
             end
 
 
-            
-        #     case login
-                
-        #     when user.nil?
-             
-        #     prompt.select("Wrong login details! Please try again!", "Retry login", "Quit")
-        #         sleep 2 
-                
-        #     when "Retry login"
-        #         username_login
-        #     when "Quit"
-        #         exit
-                
-        #     when user.valid?
-        #     puts "You're now logged in! "
-        #         @current_user = user
-        #         second_greeting
-        #     end
-        #     # prompt.mask('Please enter your password', symbols: {mask: bat})
-        #  end 
-
          def create_user
             heart = prompt.decorate(prompt.symbols[:heart])
             user_creds = prompt.collect do
@@ -97,10 +70,10 @@ class UserInterface
          end 
             @current_user = User.create(**user_creds)
             @current_user.save
-            second_greeting
+            instructions
         end 
 
-    def second_greeting
+    def instructions
 
         puts "Hello, #{@current_user.username}."
         "Instructions:
@@ -112,12 +85,12 @@ class UserInterface
     end 
 
     def mini_menu
-        mini_menu = prompt.select "Please choose from the following options", "Move onto the next phase","Go to Main Menu","Exit"
+        mini_menu = prompt.select "Please choose from the following options", "Create Your Story!","Go to Main Menu","Exit"
 
 
         case mini_menu
-        when "Move onto the next phase"
-            next_phase
+        when "Create Your Story!"
+            story_info
         when "Go to Main Menu"
             main_menu
         when "Quit"
@@ -126,7 +99,7 @@ class UserInterface
 
     end
 
-    def next_phase
+    def story_info
         puts "Here are your 3 characters"
         puts "**************************"
         sleep 1
@@ -179,10 +152,11 @@ class UserInterface
     def main_menu
         system "clear"
         15.times do puts "" end
-        main_menu = prompt.select("Please select from the following", "Your Stories", "Location Stories", "Quit")
+        main_menu = prompt.select("Please select from the following", "Create Story!","Your Stories", "Location Stories", "Quit")
 
         case main_menu
-
+        when "Create Story!"
+            instructions
         when "Your Stories"
             user_stories
         when "Location Stories"
@@ -190,12 +164,6 @@ class UserInterface
         when "Quit"
             exit
         end
-
-        #this will have user
-        # 1.user_story_edit # ??
-        # 2. user_story_delete #destroy
-        # 3. Location story # add a hint find_by name
-        # 4.exit
     end
   
     def option_drop_down(user_all_stories_title)
