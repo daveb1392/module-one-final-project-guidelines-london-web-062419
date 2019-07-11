@@ -27,14 +27,10 @@ class UserInterface
         end 
 
          def username_login
-            #find the user
-            #no duplicate usernames
-            #validate their password
             heart = prompt.decorate(prompt.symbols[:heart])
             user_info = prompt.collect do 
                 key(:username).ask('Please enter your username:', require: true)
-                # key(:password).ask('Please enter your password:', require: true)
-                key(:password).mask('Please enter your password', symbols: {mask: heart})
+                key(:password).mask('Please enter your password:', symbols: {mask: heart})
             end 
             user = User.where(username: user_info[:username], password: user_info[:password]).last
             if user.nil?
@@ -73,13 +69,14 @@ class UserInterface
             instructions
         end 
 
-    def instructions
-
+    def instructions  
+        system "clear"
+        5.times do puts "" end
         puts "Hello, #{@current_user.username}."
-        "Instructions:
-        You will be given three random characters,
-        You will also be given a random location
-        With this information you may create any story you’d like!"
+        puts "Instructions:"
+        puts "You will be given three random characters,"
+        puts "You will also be given a random location"
+        puts "With this information you may create any story you’d like!"
         puts "*------------------------------------------------------------------*"
         mini_menu
     end 
@@ -100,17 +97,22 @@ class UserInterface
     end
 
     def story_info
-        puts "Here are your 3 characters"
+        puts "Here are your 3 characters:"
         puts "**************************"
         sleep 1
         random_characters
         puts "****************************"
         sleep 1
-        puts "Here's your destiny"
+        puts "Here are some traits you can use:"
+        sleep 1
+        random_traits
+        puts "***************************"
+        sleep 1
+        puts "Here's your destination:"
         puts "***************************"
         sleep 1
         random_location
-        puts "---------------------------"
+        puts "-----------------------------------"
     end
 
 
@@ -123,6 +125,11 @@ class UserInterface
         
     end
 
+    def random_traits
+        randomized_traits = Trait.all_traits
+        @@traits = randomized_traits.sample(3)
+        puts @@traits
+    end
 
 
     def random_location
@@ -132,35 +139,44 @@ class UserInterface
         single_location = all_location.sample
         destiny_location = single_location.name   
         puts destiny_location
-        create_story(single_location)#call the next method. 
+        create_story(single_location)#calls next method
     end
 
+   
 
 
     def create_story(single_location)
     
-        story_title = prompt.ask("What the title of your story")
+        story_title = prompt.ask("What is the title of your story?")
         story_content = prompt.ask("Write your magical story")
-        #add and save to db
         new_story = Story.create(:title=>"#{story_title}", :content=>"#{story_content}", :user_id=>"#{@current_user.id}", :location_id=>"#{single_location.id}")
         @@creatures = []
-        main_menu
-        
+        story_options = prompt.select("Thats beautiful work! Your story has now been created; please select from the following options:","View your stories here!", "Back to Main Menu")
+        if story_options == "View your stories here!"
+            user_stories
+        else story_options == "Back to Main Menu"
+            main_menu
+        sleep 1
+        end 
     end
 
     
     def main_menu
         system "clear"
         15.times do puts "" end
-        main_menu = prompt.select("Please select from the following", "Create Story!","Your Stories", "Location Stories", "Quit")
+        main_menu = prompt.select("Please select from the following", "Create Story!","Your Stories", "The Bookshelf","Character Profiles","Create a Character","Quit")
 
         case main_menu
         when "Create Story!"
             instructions
         when "Your Stories"
             user_stories
-        when "Location Stories"
+        when "The Bookshelf"
             location_stories
+        when "Character Profiles"
+            all_creatures_in_app
+        when "Create a Character"
+            create_character
         when "Quit"
             exit
         end
@@ -168,11 +184,10 @@ class UserInterface
   
     def option_drop_down(user_all_stories_title)
         select_story = prompt.select("Pick a story", [user_all_stories_title])
-        # user_content = @current_user.all_user_content
         story = Story.find_by(title: select_story)
         select_content = story.content
         puts "#{select_content}"
-        story_option = prompt.select("Would you like to edit or delete this story", ["Edit", "Delete", "Go back"])
+        story_option = prompt.select("Would you like to edit or delete this story", ["Edit", "Delete", "Go back to Main Menu"])
         story = Story.find_by(title: select_story)
        
         
@@ -187,10 +202,10 @@ class UserInterface
         
         elsif story_option == "Delete"
             Story.destroy(story.id)
-            prompt.ok("Story has now been deleted, back to Main Menu")
-            sleep 1
+            prompt.ok("Story has now been deleted, you will now be taken back to Main Menu")
+            sleep 3
             main_menu
-        else story_option == "Go Back"
+        else story_option == "Go Back to Main Menu"
             main_menu
         end
     end
@@ -212,7 +227,6 @@ class UserInterface
     end
 
     def location_stories 
-        # Location.all_location_names
       
         list_of_locations = Story.all.map{|story| story.location.name}.uniq #returns individual locations name
 
@@ -229,12 +243,52 @@ class UserInterface
          select_content = story.content
          puts "#{select_content}"
 
-        option = prompt.select("You can either:", "Go Back","Or Quit!")
-        if option == "Go Back"
+        option = prompt.select("You can either:", "Go Back to Main Menu!","Or Quit!")
+        if option == "Go Back to Main Menu!"
             main_menu
         else option == "Or Quit!"
             exit
         end 
     end
+
+      
+
+        def create_character
+            created_character = prompt.ask("Create your creature...")
+            character_age = prompt.ask("How old is your character")
+            character_weapon = prompt.ask("What's their weapon")
+        new_creature = Creature.create(:creature=>"#{created_character}", :age=>"#{character_age}", :weapon=>"#{character_weapon}")
+        @@creatures = []
+        creature_options = prompt.select("Thats beautiful work! Your character has now been created; please select from the following options:","View character profiles!", "Back to Main Menu")
+        if creature_options == "View character profiles!"
+            all_creatures_in_app
+        else story_options == "Back to Main Menu"
+            main_menu
+        sleep 1
+        end 
+    end 
+
+    def all_creatures_in_app
+        creatures = Creature.all_creatures
+        chosen_creature = prompt.select("Which creature would you like to view?", creatures)
+        instance_of_creature = Creature.all.select{|creature| creature.creature == chosen_creature}
+        creature_details = instance_of_creature.map{|creature| "Age: #{creature.age}, Weapon: #{creature.weapon}"}
+        # binding.pry
+        puts creature_details
+       
+        option = prompt.select("You can either:", "Go Back to Main Menu!","Or Quit!")
+        if option == "Go Back to Main Menu!"
+            main_menu
+        else option == "Or Quit!"
+            exit
+        end
+                
+        # creature_details = Creature.find_by
+        # creature = Creature.find_by(creature: creature, age: age, weapon: weapon)
+    #     #to print out all the names of the creatures
+    #     #then be able to click into those names for more details
+    #     #show a pic for each creature.
+    end 
+
 
 end 
