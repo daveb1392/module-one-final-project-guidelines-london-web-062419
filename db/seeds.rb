@@ -11,22 +11,25 @@ Location.create ([
 puts "locations seeded"
 
 Creature.create ([
-{creature: "Wizard"},
-{creature: "Witch"},
-{creature: "Ogre"},
-{creature: "Dragon"},
-{creature: "Fairy"},
-{creature: "Goblin"},
-{creature: "Griffen"},
-{creature: "Elf"},
-{creature: "Gnome"},
-{creature: "Vampire"},
-{creature: "Werewolf"},
-{creature: "Shapeshifter"},
-{creature: "Mermaid"},
-{creature: "Lochness Monster"},
-{creature: "Sasquatch(Big Foot"},
-])
+{creature: "Wizard", age: "35", weapon: "Wand"},
+{creature: "Witch", age: "200", weapon: "Wand"},
+{creature: "Ogre", age: "40", weapon: "Onion"},
+{creature: "Dragon", age: "1000", weapon: "Fire"},
+{creature: "Fairy", age: "300", weapon: "Magic"},
+{creature: "Goblin", age: "33", weapon: "Dagger"},
+{creature: "Griffen", age:"81", weapon: "Claws"},
+{creature: "Elf", age: "a long time", weapon: "Mind Control" },
+{creature: "Gnome", age: "50", weapon: "Stick"},
+{creature: "Vampire", age: "2019", weapon: "Fangs"},
+{creature: "Werewolf", age: "24", weapon: "Claws & Teeth"},
+{creature: "Shapeshifter", age: "31", weapon: "Morph"},
+{creature: "Mermaid", age: "70", weapon: "Trident"},
+{creature: "Lochness Monster", age: "1000", weapon: "Very sharp teeth"},
+{creature: "Sasquatch(Big Foot", age: "60", weapon: "A club"},
+{creature: "Princess", age: "18", weapon: "Jewelry"},
+{creature: "Prince", age: "21", weapon: "Sword"},
+{creature: "Dwarf", age: "60", weapon: "Double side axe"},
+{creature: "Alien", age: "130", weapon: "Spaceship"}])
 
 puts "Creature seeded"
 
@@ -36,5 +39,25 @@ Story.create ([
     {user_id:1, location_id:3, title:"They call it.. Magic", content:"Hogwarts has many tales. But once upon a time.. in Hogwarts, a vampire entered the building. He didn't like witches or wizards so he went around terrorizing all the children. Dumbledore could not find this indecent individual because with vampires they have their own powers: speed, strength and mind control. So Dumbledore sent everyone into hiding i.e the common rooms. Once everyone was safe.. Dumbledore casted a spell to portal a werewolf into the building. Werewolves love killing vampires. He sniffed the vamp out and killed him on site."},
     {user_id:1, location_id:4, title:"Lost in Aokigahara", content:"Three best friends: a fairy, a gnome and an elf decided to go for a walk. They knew about the horrifying stories about Aokigahara but being magical creatures they were not worried. They were wrong. They got so lost that til this very day, their bodies have not been found."},
     {user_id:1, location_id:5, title:"It's Atlantis!", content:"A mermaid was swimming around Atlantis. She was singing and enjoying her time until she came across an Ogre. He wanted all the treasures of Atlantis to himself. The mermaid refused to show him the way to the treasure room, before the Ogre could do anything.. the Lochness Monster swam up to them and ate the Ogre. He swam off leaving the mermaid to her lovely day. The end."}
+])
+puts "Story seeded"
+
+Trait.create ([
+    {name: "Evil"},
+    {name: "Good"},
+    {name: "Ugly"},
+    {name: "Bubbly"},
+    {name: "Patient"},
+    {name: "Friendly"},
+    {name: "Very Chatty"},
+    {name: "Always Hangry"},
+    {name: "The local cray, cray"},
+    {name: "Smelly"},
+    {name: "Sly"},
+    {name: "Sneaky"},
+    {name: "Shy"},
+    {name: "Curious"},
+    {name: "VIP"},
+    {name: "Cold-Blooded"},
 ])
 puts "\n---------- SEEDED ------------\n\n"
