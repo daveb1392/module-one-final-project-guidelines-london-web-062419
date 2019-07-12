@@ -5,5 +5,15 @@ class Creature < ActiveRecord::Base
 
     def self.all_creatures
         Creature.all.map{|char| char.creature}
-    end 
+    end
+    
+    def self.random_name
+        Creature.all_creatures.sample(3)
+    end
+
+    def self.random_weapon
+        Creature.all.map{|char| char.weapon}
+    end
+
+    
 end 
