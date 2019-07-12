@@ -11,7 +11,7 @@ class Story < ActiveRecord::Base
     end
 
     def self.location_n
-        Story.all.map { |story| story.location.name }.uniq 
+        Story.all.map{|story| story.location.name }.uniq 
     end
 
 
